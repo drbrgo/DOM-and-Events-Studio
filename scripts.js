@@ -14,9 +14,12 @@ window.addEventListener("load", function(){
     const left = document.getElementById("left");
     const right = document.getElementById("right");
     const shuttle = document.getElementById("rocket");
-    let shuttlePosition = shuttle.style.position;
-    shuttlePosition = "absolute";
-    shuttle.style.bottom = "0px";
+    let shuttlePosX = 0;
+    let shuttlePosY = 0;
+    let altitude = 0;
+    //let shuttlePosition = shuttle.style.position;
+    //shuttlePosition = "absolute";
+    //shuttle.style.bottom = "0px";
 
 
 
@@ -29,9 +32,11 @@ window.addEventListener("load", function(){
         shuttleBackground.style.backgroundColor = "blue";
         
 // The shuttle height should increase by 10,000 miles.
-        shuttleHeight.innerHTML = 10000;
-    
-    }
+        altitude = 10000
+        shuttleHeight.innerHTML = altitude;
+        }
+    });
+
     land.addEventListener("click", function(){
 
 //A window alert should let the user know "The shuttle is landing. Landing gear engaged."
@@ -43,7 +48,7 @@ window.addEventListener("load", function(){
         shuttleBackground.style.backgroundColor = "green";
 
 // The shuttle height should go down to 0.
-        shuttleHeight.innerHTML = 0;
+        resetShuttle();
     });
 
     abort.addEventListener("click", function(){
@@ -51,8 +56,7 @@ window.addEventListener("load", function(){
         let confirm = window.confirm("Confirm that you want to abort the mission.");
         if(confirm){
             flightStatus.innerHTML = "Mission aborted.";
-            shuttleBackground.style.backgroundColor = "green";
-            shuttleHeight.innerHTML = 0;
+            resetShuttle();
         }
 
 // The flight status should change to "Mission aborted."
@@ -62,16 +66,45 @@ window.addEventListener("load", function(){
 // The shuttle height should go to 0.
     });
 
-    up.addEventListener("click", function(){
-        shuttleHeight.innerHTML = 10000;
-        console.log(rocket.style.top) 
+    document.addEventListener("click", function(event){
+        let backgroundWidth = parseInt(window.getComputedStyle(shuttleBackground).getPropertyValue('width'));
+        console.log(backgroundWidth);
+
+        if (event.target.id === "left" && shuttlePosX > -(backgroundWidth / 2 -40)) {
+            shuttlePosX -= 10;
+            shuttle.style.marginLeft = shuttlePosX + "px";
+        }
+        if (event.target.id === "right" && shuttlePosX < (backgroundWidth /2 - 40)) {
+            shuttlePosX += 10;
+            shuttle.style.marginLeft = shuttlePosX + "px";
+        }
+        if (event.target.id === "up" && altitude < 250000) {
+            shuttlePosY += 10;
+            shuttle.style.marginBottom = shuttlePosY + "px";
+            altitude += 10000
+            shuttleHeight.innerHTML=altitude;
+        }
+        if (event.target.id === "down" && altitude > 0 ) {
+            shuttlePosY -= 10;
+            shuttle.style.marginBottom = shuttlePosY + "px";
+            altitude -= 10000;
+            shuttleHeight.innerHTML = altitude;
+        }
     });
 
 
 //The rocket image should move 10 px in the direction of the button that was clicked.
 
 // If the "Up" or "Down" buttons were clicked, then the shuttle height should increase or decrease by 10,000 miles
-    })
+    function resetShuttle() {
+        shuttleBackground.style.backgroundColor = "green";
+        altitude = 0;
+        shuttleHeight.innerHTML = altitude;
+        shuttlePosX = 0;
+        shuttlePosY = 0;
+        shuttle.style.marginLeft = shuttlePosX + "px";
+        shuttle.style.marginBottom = shuttlePosY + "px";
+    };
 
 
 
